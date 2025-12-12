@@ -6,44 +6,28 @@ from flask_mail import Mail, Message
 # Инициализация на Flask приложението
 app = Flask(__name__)
 
-# =========================================================================
-# === КОНФИГУРАЦИЯ ЗА ИЗПРАЩАНЕ НА ИМЕЙЛИ (Flask-Mail) ===
-#
-# ЗАБЕЛЕЖКА: Трябва да промените тези стойности с вашите реални
-# SMTP данни (хост, порт, потребителско име и парола).
-# Ако използвате Gmail, вероятно ще трябва да генерирате "App Password"
-# в настройките на вашия Google профил, тъй като обикновената парола
-# обикновено не работи.
-#
-# =========================================================================
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Пример за Gmail
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True  # Използване на TLS
 app.config['MAIL_USERNAME'] = 'lpapostolov27@gmail.com'  # <-- ВАШИЯТ ИЗХОДЯЩ ИМЕЙЛ
-app.config['MAIL_PASSWORD'] = 'dmdb rxnp vlpn rgyu'  # <-- ВАШАТА ПАРОЛА/APP PASSWORD
+app.config['MAIL_PASSWORD'] = '#'  # <-- ВАШАТА ПАРОЛА/APP PASSWORD
 app.config['MAIL_DEFAULT_SENDER'] = 'lpapostolov27@gmail.com'  # <-- ВАШИЯТ ИЗХОДЯЩ ИМЕЙЛ
 
 mail = Mail(app)
 
 
-# =========================================================================
 
 # Дефиниране на маршрута за началната страница (Home Page)
 @app.route('/')
 def home():
-    """ Зарежда началната страница (index.html). """
-    # Уверете се, че index.html е в папката 'templates'
     return render_template('home.html')
 
 
 # Дефиниране на маршрут за страницата B-Guide (ако вече е създадена)
 @app.route('/b-guide')
 def b_guide():
-    """ Зарежда страницата B-Guide. """
-    # Временен отговор, ако b-guide.html още не е създаден:
-    return "<h1>Добре дошли в B-Guide!</h1><p>Тук ще бъде страницата с всички забележителности.</p><p><a href='/'>Назад</a></p>"
-
+    return render_template('b-guide.html')
 
 # Дефиниране на маршрут за обработка на формата за контакти
 @app.route('/contact', methods=['POST'])
@@ -77,6 +61,11 @@ def handle_contact():
 
         # 4. Пренасочване обратно към началната страница
         return redirect(url_for('home'))
+
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 
 # Стартиране на приложението

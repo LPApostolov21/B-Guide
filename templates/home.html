@@ -196,7 +196,7 @@
             </button>
             <nav class="sidebar" id="sidebar">
                 <ul>
-                    <li><a href="#about-me">About Me</a></li>
+                    <a href="{{ url_for('about') }}">About</a>
                 </ul>
             </nav>
         </div>
@@ -204,7 +204,7 @@
         <h1 class="main-title">Burgas Overview</h1>
 
         <div class="navbar-right">
-            <a href="b-guide.html" class="b-guide-button">B-Guide</a>
+            <a href="{{ url_for('b_guide') }}" class="b-guide-button">B-Guide</a>
         </div>
     </header>
 
