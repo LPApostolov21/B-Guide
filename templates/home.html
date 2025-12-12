@@ -6,44 +6,61 @@
     <title>Burgas Overview - Вашият Гид</title>
 
     <style>
-        /* Общи стилове и нулиране */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f8ff; /* Светло син фон, напомнящ за морето */
+            background-color: #f0f8ff;
             color: #333;
+            line-height: 1.6;
         }
 
-        /* Навигационна Лента (Navbar) */
+        .flash-message {
+            padding: 15px;
+            margin: 0;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-sizing: border-box;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .flash-message.success { background-color: #2ecc71; }
+        .flash-message.danger { background-color: #e74c3c; }
+
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px 20px;
-            background-color: #004d99; /* Наситено син цвят */
+            background-color: #004d99;
             color: white;
             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            position: relative; /* Важно за позиционирането на менюто */
+            position: sticky;
+            top: 0;
+            z-index: 500;
         }
 
         .navbar-left, .navbar-right {
-            /* Фиксираме ширината на левия и десния контейнер, за да е центриран надписа */
-            width: 150px;
+            width: auto;
+            min-width: 50px;
         }
 
-        /* Централен Надпис */
         .main-title {
-            font-size: 3em; /* Голям размер на шрифта */
+            font-size: 2.5em;
             font-weight: 700;
             margin: 0 auto;
             text-align: center;
-            color: #ffcc00; /* Златисто-жълт цвят за акцент */
+            color: #ffcc00;
             flex-grow: 1;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* Бургер Меню Бутон */
         .burger-menu {
             background: none;
             border: none;
@@ -54,31 +71,32 @@
             transition: color 0.3s;
         }
 
-        .burger-menu:hover {
-            color: #ffcc00;
-        }
+        .burger-menu:hover { color: #ffcc00; }
 
-        /* Странична Лента (Меню About Me) */
         .sidebar {
-            display: none; /* Скрито по подразбиране */
-            position: absolute;
-            top: 100%; /* Позиция точно под навигационната лента */
+            display: none;
+            position: fixed;
+            top: 0;
             left: 0;
+            height: 100%;
             width: 250px;
             background-color: #333;
-            padding: 15px;
+            padding-top: 60px;
             box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
-            z-index: 10;
+            z-index: 999;
+            overflow-y: auto;
+            transition: transform 0.3s ease-out;
+            transform: translateX(-100%);
         }
 
-        /* Показване на менюто с JavaScript */
         .sidebar.active {
             display: block;
+            transform: translateX(0);
         }
 
         .sidebar ul {
             list-style: none;
-            padding: 0;
+            padding: 0 15px;
             margin: 0;
         }
 
@@ -91,20 +109,18 @@
             transition: background-color 0.3s;
         }
 
-        .sidebar a:hover {
-            background-color: #555;
-        }
+        .sidebar a:hover { background-color: #555; }
 
-        /* Бутон B-Guide */
         .b-guide-button {
             text-decoration: none;
             color: #004d99;
-            background-color: #ffcc00; /* Жълт фон */
-            padding: 10px 15px;
-            border-radius: 50px; /* За по-заоблен вид */
+            background-color: #ffcc00;
+            padding: 8px 12px;
+            border-radius: 50px;
             font-weight: bold;
             transition: background-color 0.3s, transform 0.2s;
             border: 2px solid #ffcc00;
+            font-size: 0.9em;
         }
 
         .b-guide-button:hover {
@@ -112,25 +128,21 @@
             transform: scale(1.05);
         }
 
-        /* Основно Съдържание */
         .content-area {
-            padding: 80px 20px;
+            padding: 60px 15px;
             text-align: center;
-            font-size: 1.1em;
-            min-height: 50vh; /* За да има малко празно място */
-            line-height: 1.6;
+            font-size: 1em;
+            min-height: 50vh;
         }
 
-        /* Секция About Me (за да се вижда, когато е извикана през менюто) */
         #about-me {
-            padding: 40px 20px;
+            padding: 30px 15px;
             background-color: #e6f0ff;
             text-align: center;
         }
 
-        /* Поле за Контакти (Contacts Field) */
         .contacts-field {
-            background-color: #2c3e50; /* Тъмен фон за футъра */
+            background-color: #2c3e50;
             color: white;
             padding: 30px 20px;
             text-align: center;
@@ -152,9 +164,10 @@
         .contacts-field label {
             text-align: left;
             font-weight: bold;
-            display: none; /* Скриваме лейбълите, за да е по-изчистена формата */
+            display: none;
         }
 
+        .contacts-field input[type="text"],
         .contacts-field input[type="email"],
         .contacts-field textarea {
             padding: 12px;
@@ -171,7 +184,7 @@
         }
 
         .contacts-field button {
-            background-color: #2ecc71; /* Зелен бутон за действие */
+            background-color: #2ecc71;
             color: white;
             padding: 12px;
             border: none;
@@ -185,9 +198,46 @@
         .contacts-field button:hover {
             background-color: #27ad60;
         }
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                padding: 8px 10px;
+            }
+
+            .main-title {
+                font-size: 1.5em;
+                flex-basis: 150px;
+            }
+
+            .navbar-left, .navbar-right {
+                width: auto;
+            }
+
+            .b-guide-button {
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
+
+            .content-area {
+                padding-top: 20px;
+            }
+
+            .contacts-field h2 {
+                font-size: 1.5em;
+            }
+        }
     </style>
 </head>
 <body>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
     <header class="navbar">
         <div class="navbar-left">
@@ -228,7 +278,8 @@
 
     <footer class="contacts-field" id="contacts-field">
         <h2>✉️ Контакти</h2>
-        <form>
+        <form method="POST" action="{{ url_for('handle_contact') }}">
+            <input type="text" id="name" name="name" placeholder="Вашето име" required>
             <input type="email" id="email" name="email" placeholder="Вашият имейл адрес" required>
             <textarea id="message" name="message" rows="4" placeholder="Вашето съобщение или въпрос" required></textarea>
             <button type="submit">Изпрати Съобщение</button>
@@ -241,17 +292,36 @@
             const burgerMenu = document.querySelector('.burger-menu');
             const sidebar = document.getElementById('sidebar');
 
-            // При клик върху бургер менюто, добавя/премахва класа 'active'
             burgerMenu.addEventListener('click', function() {
                 sidebar.classList.toggle('active');
             });
 
-            // При клик извън менюто, то се скрива (за по-добро потребителско изживяване)
             document.addEventListener('click', function(event) {
-                if (!sidebar.contains(event.target) && !burgerMenu.contains(event.target)) {
+                if (sidebar.classList.contains('active') && !sidebar.contains(event.target) && !burgerMenu.contains(event.target)) {
                     sidebar.classList.remove('active');
                 }
             });
+
+            const sidebarLinks = sidebar.querySelectorAll('a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                });
+            });
+
+            const flashMessages = document.querySelectorAll('.flash-message');
+
+            if (flashMessages.length > 0) {
+                setTimeout(() => {
+                    flashMessages.forEach(message => {
+                        message.style.opacity = '0';
+
+                        setTimeout(() => {
+                            message.style.display = 'none';
+                        }, 500);
+                    });
+                }, 3000);
+            }
         });
     </script>
 </body>
