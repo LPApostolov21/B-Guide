@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Burgas Overview - Вашият Гид</title>
+    <title>{% block title %}Burgas Overview - Вашият Гид{% endblock %}</title>
 
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f8ff;
+            background-size: cover;
+            background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Burgas-beach-panorama.jpg/1280px-Burgas-beach-panorama.jpg");
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
             color: #333;
             line-height: 1.6;
         }
@@ -38,7 +42,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 20px;
-            background-color: #004d99;
+            background-color: rgba(0, 77, 153, 0.95);
             color: white;
             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
             position: sticky;
@@ -100,6 +104,10 @@
             margin: 0;
         }
 
+        .sidebar li {
+            margin: 0;
+        }
+
         .sidebar a {
             color: white;
             text-decoration: none;
@@ -133,16 +141,17 @@
             text-align: center;
             font-size: 1em;
             min-height: 50vh;
+            background-color: rgba(255, 255, 255, 0.85);
         }
 
         #about-me {
             padding: 30px 15px;
-            background-color: #e6f0ff;
+            background-color: rgba(230, 240, 255, 0.9);
             text-align: center;
         }
 
         .contacts-field {
-            background-color: #2c3e50;
+            background-color: rgba(44, 62, 80, 0.95);
             color: white;
             padding: 30px 20px;
             text-align: center;
@@ -200,7 +209,6 @@
         }
 
         @media (max-width: 600px) {
-
             .navbar {
                 padding: 8px 10px;
             }
@@ -227,6 +235,8 @@
                 font-size: 1.5em;
             }
         }
+
+        {% block extra_styles %}{% endblock %}
     </style>
 </head>
 <body>
@@ -241,14 +251,18 @@
 
     <header class="navbar">
         <div class="navbar-left">
+            {% block navbar_left %}
             <button class="burger-menu" aria-label="Меню">
                 &#9776;
             </button>
             <nav class="sidebar" id="sidebar">
                 <ul>
-                    <a href="{{ url_for('about') }}">About</a>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
+                    <li><a href="#contacts-field">Contacts</a></li>
                 </ul>
             </nav>
+            {% endblock %}
         </div>
 
         <h1 class="main-title">Burgas Overview</h1>
@@ -258,6 +272,7 @@
         </div>
     </header>
 
+    {% block content %}
     <main class="content-area">
         <h2>🌊 Добре дошли в Сърцето на Българското Черноморие!</h2>
         <p>
@@ -267,14 +282,6 @@
         </p>
         <p>Кликнете върху **B-Guide** в горния десен ъгъл, за да започнете вашето пътешествие!</p>
     </main>
-
-    <section id="about-me" class="about-me-section">
-        <h3>ℹ️ About Me / За Проекта</h3>
-        <p>
-            Този сайт е създаден с ентусиазъм, за да бъде лесен и бърз наръчник за всеки, който посещава Бургас.
-            Целта ни е да покажем както популярните, така и скритите съкровища на града.
-        </p>
-    </section>
 
     <footer class="contacts-field" id="contacts-field">
         <h2>✉️ Контакти</h2>
@@ -286,28 +293,31 @@
         </form>
         <p><small>&copy; 2025 Burgas Overview. Всички права запазени.</small></p>
     </footer>
+    {% endblock %}
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const burgerMenu = document.querySelector('.burger-menu');
             const sidebar = document.getElementById('sidebar');
 
-            burgerMenu.addEventListener('click', function() {
-                sidebar.classList.toggle('active');
-            });
-
-            document.addEventListener('click', function(event) {
-                if (sidebar.classList.contains('active') && !sidebar.contains(event.target) && !burgerMenu.contains(event.target)) {
-                    sidebar.classList.remove('active');
-                }
-            });
-
-            const sidebarLinks = sidebar.querySelectorAll('a');
-            sidebarLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    sidebar.classList.remove('active');
+            if (burgerMenu && sidebar) {
+                burgerMenu.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
                 });
-            });
+
+                document.addEventListener('click', function(event) {
+                    if (sidebar.classList.contains('active') && !sidebar.contains(event.target) && !burgerMenu.contains(event.target)) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+
+                const sidebarLinks = sidebar.querySelectorAll('a');
+                sidebarLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        sidebar.classList.remove('active');
+                    });
+                });
+            }
 
             const flashMessages = document.querySelectorAll('.flash-message');
 
