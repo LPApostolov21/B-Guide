@@ -5,6 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Морски Гид - Чат Бот</title>
     <style>
+        /* --- Root Variables for Theming --- */
+        :root {
+            /* Light Theme Defaults */
+            --bg-color: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 50%, #80deea 100%);
+            --text-color: #333;
+            --header-bg: rgba(0, 77, 128, 0.9);
+            --header-shadow: rgba(0, 0, 0, 0.2);
+            --container-bg: rgba(255, 255, 255, 0.5);
+            --input-bg: rgba(0, 77, 128, 0.9);
+            --input-border: #03a9f4;
+            --input-text: white;
+            --input-placeholder: rgba(255, 255, 255, 0.7);
+            --input-focus-bg: rgba(255, 255, 255, 0.2);
+            --bot-bubble-bg: #fff8e1;
+            --bot-bubble-text: #333;
+            --bot-bubble-border: #ffcc00;
+            --welcome-text: #004d99;
+            --welcome-title-shadow: 1px 1px 1px rgba(0, 77, 128, 0.7);
+            --send-btn-color: #004d99;
+            --typing-color: #ffcc00;
+
+            /* Fixed Colors */
+            --accent-color: #ffcc00;
+            --user-bubble-start: #03a9f4;
+            --user-bubble-end: #00bcd4;
+            --user-bubble-text: white;
+            --back-btn-border: #ffcc00;
+        }
+
+        /* --- Dark Theme Overrides --- */
+        body.dark-theme {
+            --bg-color: linear-gradient(135deg, #121212 0%, #1a1a1a 50%, #212121 100%);
+            --text-color: #f0f0f0;
+            --header-bg: rgba(33, 33, 33, 0.95);
+            --header-shadow: rgba(255, 255, 255, 0.1);
+            --container-bg: rgba(25, 25, 25, 0.7);
+            --input-bg: rgba(33, 33, 33, 0.95);
+            --input-border: #90caf9; /* Light blue border */
+            --input-text: #f0f0f0;
+            --input-placeholder: rgba(240, 240, 240, 0.5);
+            --input-focus-bg: rgba(60, 60, 60, 0.5);
+            --bot-bubble-bg: #424242; /* Darker bot bubble */
+            --bot-bubble-text: #f0f0f0;
+            --bot-bubble-border: #ffcc00;
+            --welcome-text: #bbdefb; /* Lighter welcome text */
+            --welcome-title-shadow: 1px 1px 1px rgba(255, 204, 0, 0.5);
+            --send-btn-color: #121212; /* Dark send button icon */
+            --typing-color: #ffcc00;
+            --back-btn-border: #ffcc00;
+        }
+
+        /* --- General Styles --- */
         * {
             margin: 0;
             padding: 0;
@@ -13,29 +65,31 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 50%, #80deea 100%);
+            background: var(--bg-color); /* Use variable */
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            color: #333;
+            color: var(--text-color); /* Use variable */
+            transition: background 0.5s ease, color 0.5s ease;
         }
 
         .header {
-            background: rgba(0, 77, 128, 0.9);
+            background: var(--header-bg); /* Use variable */
             backdrop-filter: blur(10px);
             padding: 1rem;
-            border-bottom: 2px solid #ffcc00;
+            border-bottom: 2px solid var(--accent-color);
             display: flex;
             align-items: center;
             gap: 1rem;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 5px var(--header-shadow);
+            position: relative; /* For theme toggle button */
         }
 
         .back-btn {
             background: none;
-            border: 2px solid #ffcc00;
-            color: #ffcc00;
+            border: 2px solid var(--back-btn-border);
+            color: var(--accent-color);
             font-size: 1.2rem;
             width: 40px;
             height: 40px;
@@ -53,7 +107,7 @@
         }
 
         .header-title {
-            color: #ffcc00;
+            color: var(--accent-color);
             font-size: 1.5rem;
             font-weight: 700;
             text-transform: uppercase;
@@ -72,7 +126,8 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
-            background-color: rgba(255, 255, 255, 0.5);
+            background-color: var(--container-bg); /* Use variable */
+            transition: background-color 0.5s ease;
         }
 
         .message {
@@ -108,18 +163,20 @@
             font-size: 0.95rem;
             line-height: 1.4;
             word-wrap: break-word;
+            white-space: pre-wrap; /* За да запази новите редове (\n) от JS */
+            transition: background 0.5s ease, color 0.5s ease, border-color 0.5s ease;
         }
 
         .message.user .message-bubble {
-            background: linear-gradient(135deg, #03a9f4, #00bcd4);
-            color: white;
+            background: linear-gradient(135deg, var(--user-bubble-start), var(--user-bubble-end));
+            color: var(--user-bubble-text);
             border-bottom-right-radius: 4px;
         }
 
         .message.bot .message-bubble {
-            background: #fff8e1;
-            color: #333;
-            border: 1px solid #ffcc00;
+            background: var(--bot-bubble-bg); /* Use variable */
+            color: var(--bot-bubble-text); /* Use variable */
+            border: 1px solid var(--bot-bubble-border);
             border-bottom-left-radius: 4px;
         }
 
@@ -129,9 +186,10 @@
 
         .input-container {
             padding: 1rem;
-            background: rgba(0, 77, 128, 0.9);
+            background: var(--input-bg); /* Use variable */
             backdrop-filter: blur(10px);
             border-top: 1px solid rgba(255, 204, 0, 0.5);
+            transition: background 0.5s ease;
         }
 
         .input-wrapper {
@@ -144,9 +202,9 @@
             flex: 1;
             padding: 0.8rem 1rem;
             background: rgba(255, 255, 255, 0.15);
-            border: 2px solid #03a9f4;
+            border: 2px solid var(--input-border); /* Use variable */
             border-radius: 25px;
-            color: white;
+            color: var(--input-text); /* Use variable */
             font-size: 1rem;
             font-family: inherit;
             outline: none;
@@ -154,21 +212,21 @@
         }
 
         .chat-input:focus {
-            border-color: #ffcc00;
-            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--accent-color);
+            background: var(--input-focus-bg); /* Use variable */
         }
 
         .chat-input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--input-placeholder); /* Use variable */
         }
 
         .send-btn {
             width: 45px;
             height: 45px;
-            background: linear-gradient(135deg, #ffcc00, #ffb300);
+            background: linear-gradient(135deg, var(--accent-color), #ffb300);
             border: none;
             border-radius: 50%;
-            color: #004d99;
+            color: var(--send-btn-color); /* Use variable */
             font-size: 1.2rem;
             cursor: pointer;
             display: flex;
@@ -197,7 +255,7 @@
         .typing-dot {
             width: 8px;
             height: 8px;
-            background: #ffcc00;
+            background: var(--typing-color); /* Use variable */
             border-radius: 50%;
             animation: typing 1.4s infinite;
         }
@@ -212,17 +270,40 @@
 
         .welcome-message {
             text-align: center;
-            color: #004d99;
+            color: var(--welcome-text); /* Use variable */
             padding: 2rem 1rem;
             font-size: 1rem;
             line-height: 1.6;
+            transition: color 0.5s ease;
         }
 
         .welcome-message h2 {
             font-size: 1.6rem;
             margin-bottom: 0.5rem;
-            color: #ffcc00;
-            text-shadow: 1px 1px 1px rgba(0, 77, 128, 0.7);
+            color: var(--accent-color);
+            text-shadow: var(--welcome-title-shadow); /* Use variable */
+        }
+
+        /* --- New Theme Toggle Button Style --- */
+        .theme-toggle {
+            position: absolute;
+            right: 1rem;
+            background: none;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease, color 0.5s ease, border-color 0.5s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 204, 0, 0.2);
         }
     </style>
 </head>
@@ -230,12 +311,14 @@
     <div class="header">
         <button class="back-btn" onclick="window.location.href='{{ url_for('home') }}'">←</button>
         <div class="header-title">⚓ Морски Гид</div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Превключване на тема">☀️</button>
     </div>
 
     <div class="chat-container" id="chatContainer">
         <div class="welcome-message">
             <h2>Добре дошли! Аз съм Вашият Морски Гид!</h2>
-            <p>Преди да потеглим, кажете **"Здравей"** или **"Как си?"**</p>
+            <p>Преди да потеглим, кажете **"Здравей"** или **"Какво можеш?"** или **Помощ**</p>
+            <p>!!!Можете да пратите само една клучова дума на съобщение!!!</p>
         </div>
     </div>
 
@@ -256,6 +339,47 @@
         const chatContainer = document.getElementById('chatContainer');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        // --- Theme Logic ---
+        function setIcon(isDark) {
+            themeToggle.textContent = isDark ? '🌙' : '☀️';
+        }
+
+        function applyTheme(isDark) {
+            if (isDark) {
+                body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+                setIcon(true);
+            } else {
+                body.classList.remove('dark-theme');
+                localStorage.setItem('theme', 'light');
+                setIcon(false);
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = body.classList.contains('dark-theme');
+            applyTheme(!isDark);
+        }
+
+        // Initialize theme based on stored preference or system preference
+        const storedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (storedTheme === 'dark') {
+            applyTheme(true);
+        } else if (storedTheme === 'light') {
+            applyTheme(false);
+        } else {
+            // Default to system preference if no stored theme
+            applyTheme(prefersDark);
+        }
+
+        themeToggle.addEventListener('click', toggleTheme);
+        // --- End Theme Logic ---
+
 
         messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -270,7 +394,11 @@
 
             const bubble = document.createElement('div');
             bubble.className = 'message-bubble';
-            bubble.textContent = text;
+
+            // Преобразува ключовите думи в удебелен текст (HTML <strong>)
+            const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            bubble.innerHTML = formattedText;
+
 
             messageDiv.appendChild(bubble);
             chatContainer.appendChild(messageDiv);
@@ -297,15 +425,34 @@
             if (typing) typing.remove();
         }
 
+        /**
+         * Разширена функция за отговор на чат бота
+         * @param {string} message - Съобщението от потребителя
+         * @returns {string} - Разширен отговор от бота
+         */
         function getBotResponse(message) {
-            const lowerMessage = message.toLowerCase();
+            // Нормализиране: превръщане в малки букви и премахване на всички препинателни знаци/множество интервали
+            const lowerMessage = message.toLowerCase().replace(/[.,!?'"-\s]+/g, ' ').trim();
 
-            if (lowerMessage.includes('здравей') || lowerMessage.includes('здрасти')) {
-                return 'Здравей! Радвам се, че си тук! Готов съм да те разведа по морския бряг. Какво ново?';
-            } else if (lowerMessage.includes('как си')) {
-                return 'Аз съм чудесно! Морето е спокойно, слънцето грее... Всичко е наред. А ти как си?';
-            } else {
-                return 'Хм, интересно... Засега мога да отговарям само на "Здравей" и "Как си". Пробвай с един от тези поздрави!';
+            if (lowerMessage.includes('здравей') || lowerMessage.includes('здрасти') || lowerMessage.includes('добър ден') || lowerMessage.includes('добро утро') || lowerMessage.includes('добър вечер')) {
+                return 'Здравей и добре дошъл на борда! 🚢\n\nРадвам се, че си тук! Като Морски Гид, мога да ти разкажа много интересни неща за Черно море, плажовете, забележителностите или пък за времето. Кажи ми, с какво мога да ти бъда полезен днес?';
+            } else if (lowerMessage.includes('как си') || lowerMessage.includes('как е положението')) {
+                return 'Аз съм чудесно! 🌊 Морето е спокойно, слънцето грее, а вълните тихо ромолят. Всичко е наред! Като изкуствен интелект, моето "настроение" е винаги оптимистично и готово за работа.\n\nА ти как се чувстваш днес? Готов ли си за морски приключения?';
+            } else if (lowerMessage.includes('благодаря') || lowerMessage.includes('мерси')) {
+                return 'Няма за какво! ☀️ Винаги на Ваше разположение! Ако имаш още въпроси, свързани с морския живот, плавания или нещо друго, не се колебай да попиташ.';
+            } else if (lowerMessage.includes('кой си')) {
+                return 'Аз съм **Морският Гид**, създаден да ти помага с информация за всичко, свързано с Черно море и българското крайбрежие. Мога да ти дам информация за плажове, градове, климат и др. Мисли за мен като за твоя виртуален лоцман! 🧭';
+            } else if (lowerMessage.includes('времето') || lowerMessage.includes('температура') || lowerMessage.includes('прогноза')) {
+                return 'За да ти дам точна прогноза, ще ми трябва конкретно местоположение (напр. **"Времето във Варна"** или **"Температурата на водата"**). По принцип, крайбрежието се радва на мек климат с топли лета. 🌡️ Какво точно те интересува?';
+            } else if (lowerMessage.includes('плажове') || lowerMessage.includes('плаж') || lowerMessage.includes('ивица')) {
+                return 'Българското Черноморие има над 370 км брегова ивица с прекрасни плажове! 🏖️\n\nНякои от най-известните са: **Слънчев бряг**, **Златни пясъци**, **Албена**, но има и скрити перли като плаж **Иракли** или **Болата**.\n\nКой район те привлича най-много, за да ти дам по-подробна информация?';
+            }
+            // ФУНКЦИОНАЛНОСТ ЗА ВЪЗМОЖНОСТИ (ПОМОЩ)
+            else if (lowerMessage.includes('помощ') || lowerMessage.includes('какво можеш') || lowerMessage.includes('възможности') || lowerMessage.includes('отговори')) {
+                return 'Разбира се! Аз съм Вашият **Морски Гид** и мога да Ви дам информация по следните теми: 📝\n\n**1. Поздрави и Общи Въпроси:**\n* **Здравей** / **Здрасти**\n* **Как си**\n* **Благодаря** / **Мерси**\n* **Кой си**\n\n**2. Морски Справочник:**\n* **Плажове** (кои са най-добрите)\n* **Времето** (прогноза за крайбрежието)\n* **Какво можеш** / **Помощ** (този списък)\n\nПросто въведете ключовата дума, която Ви интересува, например **"Плажове"**!';
+            }
+            else {
+                return 'Хм, това е интересно, но засега не съм програмиран да отговарям на **тази** тема. 😔 Можеш ли да преформулираш въпроса си или да опиташ с някоя от следните ключови думи:\n\n* **Здравей**\n* **Как си**\n* **Плажове**\n* **Времето**\n* **Какво можеш**';
             }
         }
 
@@ -321,12 +468,16 @@
 
             const botResponse = getBotResponse(message);
 
+            // НОВАТА ЛОГИКА ЗА БЪРЗО ИЗЧИСЛЯВАНЕ НА ЗАБАВЯНЕТО:
+            // Минимум 400ms, максимум 1000ms. Забавянето е 15ms за всеки символ.
+            const delay = Math.min(1000, Math.max(400, botResponse.length * 15));
+
             setTimeout(() => {
                 removeTyping();
                 addMessage(botResponse, false);
                 sendBtn.disabled = false;
                 messageInput.focus();
-            }, 1200);
+            }, delay);
         }
     </script>
 </body>
